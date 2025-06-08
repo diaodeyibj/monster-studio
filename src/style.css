@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 全局样式 */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #fff;
+    overflow-x: hidden;
+  }
+}
+
+/* 自定义组件样式 */
+@layer components {
+  .film-strip {
+    background-image: 
+      repeating-linear-gradient(
+        90deg,
+        #2d2d2d 0px,
+        #2d2d2d 20px,
+        #1a1a1a 20px,
+        #1a1a1a 40px
+      );
+  }
+  
+  .gradient-text {
+    background: linear-gradient(45deg, #FFD700, #FFA500, #FF6B6B, #4ECDC4);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-x 3s ease infinite;
+  }
+  
+  .film-perforation {
+    background-image: 
+      radial-gradient(circle at center, transparent 6px, #2d2d2d 6px, #2d2d2d 14px, transparent 14px),
+      linear-gradient(90deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    background-size: 20px 20px, 100% 100%;
+  }
+  
+  .glass-effect {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+} 

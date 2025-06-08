@@ -1,0 +1,148 @@
+{
+  "company": {
+    "name": "怪兽工场",
+    "nameEn": "Monster Studio",
+    "tagline": "创造视觉奇迹，讲述非凡故事",
+    "taglineEn": "Creating Visual Miracles, Telling Extraordinary Stories",
+    "description": "我们是一支专业的影视后期制作团队，专注于为电影、电视剧、广告和短视频提供顶级的视觉效果和后期制作服务。从概念设计到最终渲染，我们用技术和创意为每一个项目注入生命力。",
+    "founded": "2020",
+    "location": "北京",
+    "contact": {
+      "email": "contact@monsterstudio.com",
+      "phone": "+86 138 0013 8000",
+      "wechat": "MonsterStudio2020",
+      "address": "北京市朝阳区创意园区"
+    }
+  },
+  "navigation": [
+    {
+      "id": 1,
+      "name": "what we do",
+      "path": "/work",
+      "title": "what we do"
+    },
+    {
+      "id": 2,
+      "name": "about us",
+      "path": "/about",
+      "title": "nice to meet you"
+    },
+    {
+      "id": 3,
+      "name": "the forces",
+      "path": "/team",
+      "title": "the forces"
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "title": "视觉特效",
+      "icon": "🎬",
+      "description": "为电影和电视剧提供专业的视觉特效制作服务，运用最新的CGI技术创造震撼的视觉体验。"
+    },
+    {
+      "id": 2,
+      "title": "调色剪辑",
+      "icon": "🎨",
+      "description": "专业的调色和剪辑服务，通过精确的色彩管理和节奏把控提升作品的视觉质量和叙事效果。"
+    },
+    {
+      "id": 3,
+      "title": "动画制作",
+      "icon": "✨",
+      "description": "从2D手绘到3D建模，从角色动画到场景渲染，我们的动画制作让想象变为现实。"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1749051529541,
+      "title": "水电费是的",
+      "category": "movie-trailer",
+      "year": "2025",
+      "duration": "2",
+      "poster": "/uploads/images/file-1749138955866-417707670.jpg",
+      "videoSrc": "/uploads/videos/file-1749053144307-58799473.MP4",
+      "description": "水电费是的"
+    },
+    {
+      "id": 1749051694116,
+      "title": "现成V型出v",
+      "category": "movie-trailer",
+      "year": "2025",
+      "duration": "2",
+      "poster": "/uploads/images/file-1749377045991-286892975.png",
+      "videoSrc": "/uploads/videos/file-1749051709381-534939144.MP4",
+      "description": "电风扇地方"
+    },
+    {
+      "id": 1749137666666,
+      "title": "内径",
+      "category": "tv-trailer",
+      "year": "2025",
+      "duration": "2",
+      "poster": "/uploads/images/file-1749138962917-922687121.webp",
+      "videoSrc": "/uploads/videos/file-1749137689945-101227602.MP4",
+      "description": "阿斯蒂芬斯蒂芬"
+    }
+  ],
+  "team": [
+    {
+      "id": 1749137732778,
+      "name": "刘导演",
+      "position": "导演",
+      "experience": "工作经验",
+      "specialty": "专业领域",
+      "education": "教育背景",
+      "bio": "水电费水电费是的V型出",
+      "skills": [],
+      "avatar": "/uploads/images/file-1749137774021-952048900.png"
+    }
+  ],
+  "teamDescription": "每一个团队成员都是我们的力量来源，他们用专业技能和无限创意，为每个项目注入生命力。",
+  "aboutSections": [
+    {
+      "id": 1,
+      "title": "Home to a bunch of art prints, set props and culture-shaping projects that even your grandma would recognize.",
+      "content": "An LA-based studio where being yourself is not only accepted but encouraged. Whether it’s a handshake in the office or a wave on zoom, we treat each other with respect.",
+      "image": "/uploads/images/file-1749139060796-572977473.jpg",
+      "maxLength": 100,
+      "expanded": false
+    },
+    {
+      "id": 2,
+      "title": "We foster it. We nurture it. We preserve it, and we’re still working on it.",
+      "content": "Our employees are a reflection of the demographics we serve. As an ongoing effort to further our understanding of ways to incorporate diversity, equity and inclusion, we strive for our employees to be a reflection of our audiences.",
+      "image": "/uploads/images/file-1749139064073-278279570.png",
+      "maxLength": 100,
+      "expanded": false
+    }
+  ],
+  "valuesHtml": {
+    "html": "\n          <h3 style=\"text-align: center; margin-bottom: 4rem; font-size: 1.5rem; color: white;\">核心价值观</h3>\n          <div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;\">\n            <div style=\"text-align: center;\">\n              <div style=\"width: 4rem; height: 4rem; margin: 0 auto 1.5rem; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;\">🎯</div>\n              <h4 style=\"font-size: 1.125rem; color: white; margin-bottom: 1rem;\">专业精神</h4>\n              <p style=\"color: #9ca3af; font-size: 0.875rem; line-height: 1.6;\">我们坚持最高的专业标准，每一个项目都精益求精，追求完美的视觉呈现。</p>\n            </div>\n            <div style=\"text-align: center;\">\n              <div style=\"width: 4rem; height: 4rem; margin: 0 auto 1.5rem; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;\">🚀</div>\n              <h4 style=\"font-size: 1.125rem; color: white; margin-bottom: 1rem;\">创新驱动</h4>\n              <p style=\"color: #9ca3af; font-size: 0.875rem; line-height: 1.6;\">拥抱新技术，探索新可能。我们始终站在行业前沿，用创新推动视觉艺术的发展。</p>\n            </div>\n            <div style=\"text-align: center;\">\n              <div style=\"width: 4rem; height: 4rem; margin: 0 auto 1.5rem; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;\">🤝</div>\n              <h4 style=\"font-size: 1.125rem; color: white; margin-bottom: 1rem;\">合作共赢</h4>\n              <p style=\"color: #9ca3af; font-size: 0.875rem; line-height: 1.6;\">与客户建立长期合作关系，深度理解项目需求，共同创造令人惊艳的视觉作品。</p>\n            </div>\n          </div>\n        ",
+    "css": ""
+  },
+  "achievementsHtml": {
+    "html": "\n          <h3 style=\"text-align: center; margin-bottom: 4rem; font-size: 1.5rem; color: white;\">荣誉成就</h3>\n          <div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;\">\n            <div style=\"padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; background: rgba(255,255,255,0.02);\">\n              <div style=\"margin-bottom: 1rem; font-size: 2rem;\">🏆</div>\n              <h4 style=\"font-size: 1.125rem; color: white; margin-bottom: 0.5rem;\">最佳视觉效果奖</h4>\n              <p style=\"color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.25rem;\">第38届金鸡奖</p>\n              <p style=\"color: #6b7280; font-size: 0.75rem;\">2023</p>\n            </div>\n            <div style=\"padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; background: rgba(255,255,255,0.02);\">\n              <div style=\"margin-bottom: 1rem; font-size: 2rem;\">🎬</div>\n              <h4 style=\"font-size: 1.125rem; color: white; margin-bottom: 0.5rem;\">优秀后期制作团队</h4>\n              <p style=\"color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.25rem;\">中国电影节</p>\n              <p style=\"color: #6b7280; font-size: 0.75rem;\">2022</p>\n            </div>\n            <div style=\"padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; background: rgba(255,255,255,0.02);\">\n              <div style=\"margin-bottom: 1rem; font-size: 2rem;\">✨</div>\n              <h4 style=\"font-size: 1.125rem; color: white; margin-bottom: 0.5rem;\">创新技术应用奖</h4>\n              <p style=\"color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.25rem;\">北京影视协会</p>\n              <p style=\"color: #6b7280; font-size: 0.75rem;\">2021</p>\n            </div>\n          </div>\n        ",
+    "css": ""
+  },
+  "achievements": [
+    {
+      "title": "最佳视觉效果奖",
+      "event": "第38届金鸡奖",
+      "year": "2023"
+    },
+    {
+      "title": "优秀后期制作团队",
+      "event": "中国电影节",
+      "year": "2022"
+    },
+    {
+      "title": "创新技术应用奖",
+      "event": "北京影视协会",
+      "year": "2021"
+    }
+  ],
+  "aboutBottomImage": "/uploads/images/file-1749217735455-459469944.jpg",
+  "aboutBottomImageMobile": ""
+}
