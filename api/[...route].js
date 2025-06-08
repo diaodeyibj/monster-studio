@@ -98,30 +98,33 @@ app.use(express.json())
 
 // API路由处理
 module.exports = function handler(req, res) {
-  // 设置CORS头
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-session-id')
-  res.setHeader('Access-Control-Expose-Headers', 'x-session-id')
-  
-  // 处理OPTIONS预检请求
-  if (req.method === 'OPTIONS') {
-    res.status(200).end()
-    return
-  }
+  try {
+    // 设置CORS头
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-session-id')
+    res.setHeader('Access-Control-Expose-Headers', 'x-session-id')
+    res.setHeader('Content-Type', 'application/json')
+    
+    // 处理OPTIONS预检请求
+    if (req.method === 'OPTIONS') {
+      res.status(200).end()
+      return
+    }
 
-  const { route } = req.query
-  const routePath = Array.isArray(route) ? route.join('/') : route
+    const { route } = req.query
+    const routePath = Array.isArray(route) ? route.join('/') : (route || '')
 
-  // 添加调试日志
-  console.log(`API Request: ${req.method} ${routePath}`, { 
-    query: req.query, 
-    body: req.body,
-    headers: req.headers 
-  })
+    // 添加调试日志
+    console.log(`API Request: ${req.method} /${routePath}`, { 
+      query: req.query, 
+      body: req.body,
+      url: req.url,
+      path: routePath
+    })
 
-  // 处理不同的API路由
-  switch (routePath) {
+    // 处理不同的API路由
+    switch (routePath) {
     case 'config':
       if (req.method === 'GET') {
         const config = readConfig()
@@ -194,5 +197,12 @@ module.exports = function handler(req, res) {
 
     default:
       res.status(404).json({ error: 'API endpoint not found' })
+  }
+  } catch (error) {
+    console.error('API Error:', error)
+    res.status(500).json({ 
+      success: false, 
+      error: 'Internal server error: ' + error.message 
+    })
   }
 } 
