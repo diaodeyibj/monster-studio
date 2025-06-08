@@ -102,10 +102,10 @@ console.log('\n🔧 检查API文件语法:')
 // 简单检查API文件是否包含必要的导出
 try {
   const apiContent = fs.readFileSync('api/[...route].js', 'utf8')
-  if (apiContent.includes('export default')) {
+  if (apiContent.includes('module.exports')) {
     console.log('✅ API路由文件包含正确的导出')
   } else {
-    console.log('❌ API路由文件缺少默认导出')
+    console.log('❌ API路由文件缺少模块导出')
     hasErrors = true
   }
 } catch (error) {
@@ -115,7 +115,7 @@ try {
 
 try {
   const uploadContent = fs.readFileSync('api/upload.js', 'utf8')
-  if (uploadContent.includes('export default') && uploadContent.includes('formidable')) {
+  if (uploadContent.includes('module.exports') && uploadContent.includes('formidable')) {
     console.log('✅ 文件上传API配置正确')
   } else {
     console.log('❌ 文件上传API配置有问题')

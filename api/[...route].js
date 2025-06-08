@@ -97,12 +97,12 @@ app.use(cors({
 app.use(express.json())
 
 // API路由处理
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   const { route } = req.query
-  const path = Array.isArray(route) ? route.join('/') : route
+  const routePath = Array.isArray(route) ? route.join('/') : route
 
   // 处理不同的API路由
-  switch (path) {
+  switch (routePath) {
     case 'config':
       if (req.method === 'GET') {
         const config = readConfig()
