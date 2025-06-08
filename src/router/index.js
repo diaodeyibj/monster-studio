@@ -3,7 +3,7 @@ import Home from '../views/Home.vue'
 import Work from '../views/Work.vue'
 import About from '../views/About.vue'
 import Team from '../views/Team.vue'
-import Admin from '../views/Admin-Complete.vue'
+import Admin from '../views/Admin.vue'
 
 const routes = [
   {

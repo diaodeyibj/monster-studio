@@ -3,7 +3,10 @@ class ConfigService {
   constructor() {
     this.config = null
     this.listeners = []
-    this.apiBaseUrl = 'http://localhost:3001/api'
+    // 在生产环境中使用相对路径，开发环境使用localhost
+    this.apiBaseUrl = process.env.NODE_ENV === 'production' 
+      ? '/api' 
+      : 'http://localhost:3001/api'
     this.sessionId = localStorage.getItem('monster-studio-session')
     this.init()
   }
@@ -298,8 +301,8 @@ class ConfigService {
   async saveConfig(config) {
     try {
       // 优先尝试保存到后端
-      const response = await fetch(`${this.apiBaseUrl}/config`, {
-        method: 'POST',
+      const response = await fetch(`${this.apiBaseUrl}/admin/config`, {
+        method: 'PUT',
         headers: this.getHeaders(),
         body: JSON.stringify(config)
       })
