@@ -98,8 +98,27 @@ app.use(express.json())
 
 // API路由处理
 module.exports = function handler(req, res) {
+  // 设置CORS头
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-session-id')
+  res.setHeader('Access-Control-Expose-Headers', 'x-session-id')
+  
+  // 处理OPTIONS预检请求
+  if (req.method === 'OPTIONS') {
+    res.status(200).end()
+    return
+  }
+
   const { route } = req.query
   const routePath = Array.isArray(route) ? route.join('/') : route
+
+  // 添加调试日志
+  console.log(`API Request: ${req.method} ${routePath}`, { 
+    query: req.query, 
+    body: req.body,
+    headers: req.headers 
+  })
 
   // 处理不同的API路由
   switch (routePath) {
@@ -116,10 +135,10 @@ module.exports = function handler(req, res) {
       if (req.method === 'POST') {
         const { password } = req.body
         
-        // 简单的密码验证（实际应用中应该使用环境变量）
+        // 简单的密码验证
         const adminPassword = 'monster2024'
         
-        if (password && bcrypt.compareSync(password, bcrypt.hashSync(adminPassword, 10))) {
+        if (password && password === adminPassword) {
           const sessionId = generateSessionId()
           const expiresAt = Date.now() + (30 * 60 * 1000) // 30分钟
           
