@@ -1,9 +1,9 @@
-const bcrypt = require('bcryptjs')
+import bcrypt from 'bcryptjs'
 
 // 管理员凭据（应该从环境变量或配置文件读取）
 const ADMIN_PASSWORD_HASH = '$2a$10$8K1p/a0dclxKMs/wIam9Oeuy/6gm5o3jgJ6FLnr8GHJVMqTyKBrVe' // monster2024
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // 设置CORS头
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')

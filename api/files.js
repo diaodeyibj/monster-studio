@@ -1,5 +1,5 @@
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
 // 获取文件列表
 function getFilesList() {
@@ -28,7 +28,7 @@ function getFilesList() {
   return files
 }
 
-module.exports = function handler(req, res) {
+export default function handler(req, res) {
   // 设置CORS头
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')

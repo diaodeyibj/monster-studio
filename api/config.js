@@ -1,5 +1,5 @@
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
 // 配置文件路径
 const CONFIG_FILE = path.join(process.cwd(), 'config.json')
@@ -37,7 +37,7 @@ function readConfig() {
   }
 }
 
-module.exports = function handler(req, res) {
+export default function handler(req, res) {
   try {
     // 设置CORS头
     res.setHeader('Access-Control-Allow-Origin', '*')

@@ -1,8 +1,8 @@
-const formidable = require('formidable')
-const fs = require('fs')
-const path = require('path')
+import formidable from 'formidable'
+import fs from 'fs'
+import path from 'path'
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // 设置CORS头
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
@@ -68,8 +68,8 @@ module.exports = async function handler(req, res) {
   }
 }
 
-// 配置对象需要单独导出
-module.exports.config = {
+// Vercel API配置
+export const config = {
   api: {
     bodyParser: false,
   },

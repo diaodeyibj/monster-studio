@@ -1,5 +1,5 @@
-const bcrypt = require('bcryptjs')
-const crypto = require('crypto')
+import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 
 // 生成随机session ID
 function generateSessionId() {
@@ -18,7 +18,7 @@ function createSession(sessionId, userData) {
   return session
 }
 
-module.exports = function handler(req, res) {
+export default function handler(req, res) {
   try {
     // 设置CORS头
     res.setHeader('Access-Control-Allow-Origin', '*')
