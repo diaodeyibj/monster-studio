@@ -1,12 +1,21 @@
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
 
-// 简单的内存session存储
-const sessions = new Map()
-
 // 生成随机session ID
 function generateSessionId() {
   return crypto.randomBytes(32).toString('hex')
+}
+
+// 简单的内存session存储
+let sessions = new Map()
+
+function createSession(sessionId, userData) {
+  const session = {
+    user: userData,
+    expiresAt: Date.now() + (30 * 60 * 1000) // 30分钟
+  }
+  sessions.set(sessionId, session)
+  return session
 }
 
 module.exports = function handler(req, res) {
@@ -34,12 +43,7 @@ module.exports = function handler(req, res) {
       
       if (password && password === adminPassword) {
         const sessionId = generateSessionId()
-        const expiresAt = Date.now() + (30 * 60 * 1000) // 30分钟
-        
-        sessions.set(sessionId, {
-          expiresAt,
-          userId: 'admin'
-        })
+        createSession(sessionId, { username: 'admin' })
         
         res.setHeader('x-session-id', sessionId)
         res.status(200).json({ 

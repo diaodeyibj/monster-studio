@@ -54,6 +54,31 @@ module.exports = function handler(req, res) {
     if (req.method === 'GET') {
       const config = readConfig()
       res.status(200).json(config)
+    } else if (req.method === 'POST') {
+      // 简单的认证检查
+      const sessionId = req.headers['x-session-id']
+      if (!sessionId) {
+        return res.status(401).json({ 
+          success: false, 
+          error: '未授权访问，请先登录' 
+        })
+      }
+
+      // 保存配置
+      try {
+        const newConfig = req.body
+        fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2), 'utf8')
+        res.status(200).json({ 
+          success: true, 
+          message: '配置保存成功' 
+        })
+      } catch (error) {
+        console.error('保存配置失败:', error)
+        res.status(500).json({ 
+          success: false, 
+          error: '配置保存失败' 
+        })
+      }
     } else {
       res.status(405).json({ error: 'Method not allowed' })
     }

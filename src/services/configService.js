@@ -301,8 +301,8 @@ class ConfigService {
   async saveConfig(config) {
     try {
       // 优先尝试保存到后端
-      const response = await fetch(`${this.apiBaseUrl}/admin/config`, {
-        method: 'PUT',
+      const response = await fetch(`${this.apiBaseUrl}/config`, {
+        method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify(config)
       })
@@ -398,9 +398,10 @@ class ConfigService {
   // 删除单个文件
   async deleteFile(filePath) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/files?path=${encodeURIComponent(filePath)}`, {
+      const response = await fetch(`${this.apiBaseUrl}/files`, {
         method: 'DELETE',
-        headers: this.getHeaders()
+        headers: this.getHeaders(),
+        body: JSON.stringify({ filePath })
       })
 
       if (response.ok) {
@@ -419,10 +420,10 @@ class ConfigService {
   // 批量删除文件
   async batchDeleteFiles(filePaths) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/files/batch-delete`, {
+      const response = await fetch(`${this.apiBaseUrl}/batch-delete`, {
         method: 'POST',
         headers: this.getHeaders(),
-        body: JSON.stringify({ files: filePaths })
+        body: JSON.stringify({ filePaths })
       })
 
       if (response.ok) {
