@@ -1,6 +1,67 @@
-import { verifySessionToken, extendSession } from './_shared/sessions.js'
+const crypto = require('crypto')
 
-export default function handler(req, res) {
+// 内联session管理
+const SESSION_SECRET = process.env.SESSION_SECRET || 'monster-studio-secret-key-2024'
+
+function verifySessionToken(token) {
+  if (!token) {
+    return null
+  }
+  
+  try {
+    const [tokenData, signature] = token.split('.')
+    if (!tokenData || !signature) {
+      return null
+    }
+    
+    // 验证签名
+    const expectedSignature = crypto
+      .createHmac('sha256', SESSION_SECRET)
+      .update(tokenData)
+      .digest('hex')
+    
+    if (signature !== expectedSignature) {
+      return null
+    }
+    
+    // 解析数据
+    const sessionData = JSON.parse(Buffer.from(tokenData, 'base64').toString())
+    
+    // 检查过期时间
+    if (Date.now() > sessionData.expiresAt) {
+      return null
+    }
+    
+    return sessionData
+  } catch (error) {
+    console.error('Session verification error:', error)
+    return null
+  }
+}
+
+function extendSession(token) {
+  const sessionData = verifySessionToken(token)
+  if (!sessionData) {
+    return null
+  }
+  
+  // 创建新token
+  const newSessionData = {
+    user: sessionData.user,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + (30 * 60 * 1000)
+  }
+  
+  const tokenData = Buffer.from(JSON.stringify(newSessionData)).toString('base64')
+  const signature = crypto
+    .createHmac('sha256', SESSION_SECRET)
+    .update(tokenData)
+    .digest('hex')
+  
+  return `${tokenData}.${signature}`
+}
+
+module.exports = function handler(req, res) {
   try {
     // 设置CORS头
     res.setHeader('Access-Control-Allow-Origin', '*')

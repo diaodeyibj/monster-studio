@@ -1,7 +1,26 @@
-import bcrypt from 'bcryptjs'
-import { generateSessionId, createSessionToken } from './_shared/sessions.js'
+const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 
-export default function handler(req, res) {
+// 内联session管理（避免ES模块导入问题）
+const SESSION_SECRET = process.env.SESSION_SECRET || 'monster-studio-secret-key-2024'
+
+function createSessionToken(userData) {
+  const sessionData = {
+    user: userData,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + (30 * 60 * 1000) // 30分钟
+  }
+  
+  const tokenData = Buffer.from(JSON.stringify(sessionData)).toString('base64')
+  const signature = crypto
+    .createHmac('sha256', SESSION_SECRET)
+    .update(tokenData)
+    .digest('hex')
+  
+  return `${tokenData}.${signature}`
+}
+
+module.exports = function handler(req, res) {
   try {
     // 设置CORS头
     res.setHeader('Access-Control-Allow-Origin', '*')
