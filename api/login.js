@@ -20,26 +20,36 @@ function createSessionToken(userData) {
   return `${tokenData}.${signature}`
 }
 
-// 使用Vercel推荐的Web API格式
-export async function POST(request) {
+// Vercel Serverless Function格式（非Next.js项目）
+export default async function handler(req, res) {
   try {
     // 设置CORS头
-    const headers = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, x-session-id',
-      'Access-Control-Expose-Headers': 'x-session-id',
-      'Content-Type': 'application/json'
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-session-id')
+    res.setHeader('Access-Control-Expose-Headers', 'x-session-id')
+    res.setHeader('Content-Type', 'application/json')
+    
+    // 处理OPTIONS预检请求
+    if (req.method === 'OPTIONS') {
+      res.status(200).end()
+      return
     }
 
-    const body = await request.json()
-    const { password } = body
+    if (req.method !== 'POST') {
+      return res.status(405).json({ 
+        success: false, 
+        error: 'Method not allowed' 
+      })
+    }
+
+    const { password } = req.body
     
     if (!password) {
-      return new Response(JSON.stringify({ 
+      return res.status(400).json({ 
         success: false, 
         error: '请输入密码' 
-      }), { status: 400, headers })
+      })
     }
     
     console.log('Login attempt with password provided')
@@ -51,39 +61,24 @@ export async function POST(request) {
       // 创建session token
       const sessionToken = createSessionToken({ username: 'admin' })
       
-      headers['x-session-id'] = sessionToken
-      return new Response(JSON.stringify({ 
+      res.setHeader('x-session-id', sessionToken)
+      return res.status(200).json({ 
         success: true, 
         message: '登录成功',
         sessionId: sessionToken,
         needsPasswordSetup: false
-      }), { status: 200, headers })
+      })
     } else {
-      return new Response(JSON.stringify({ 
+      return res.status(401).json({ 
         success: false, 
         error: '密码错误' 
-      }), { status: 401, headers })
+      })
     }
   } catch (error) {
     console.error('Login API Error:', error)
-    return new Response(JSON.stringify({ 
+    return res.status(500).json({ 
       success: false, 
       error: '服务器内部错误: ' + error.message 
-    }), { 
-      status: 500, 
-      headers: { 'Content-Type': 'application/json' }
     })
   }
-}
-
-export async function OPTIONS(request) {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, x-session-id',
-      'Access-Control-Expose-Headers': 'x-session-id'
-    }
-  })
 } 

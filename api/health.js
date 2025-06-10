@@ -1,47 +1,37 @@
-export async function GET(request) {
+export default async function handler(req, res) {
   try {
+    // 设置CORS头
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-session-id')
+    res.setHeader('Content-Type', 'application/json')
+    
+    // 处理OPTIONS预检请求
+    if (req.method === 'OPTIONS') {
+      res.status(200).end()
+      return
+    }
+
     const health = {
       status: 'ok',
       timestamp: new Date().toISOString(),
-      method: 'GET',
-      url: request.url,
+      method: req.method,
+      url: req.url,
       headers: {
-        'user-agent': request.headers.get('user-agent'),
-        'content-type': request.headers.get('content-type')
+        'user-agent': req.headers['user-agent'],
+        'content-type': req.headers['content-type']
       },
       environment: process.env.NODE_ENV || 'unknown',
       deployment: process.env.VERCEL_ENV || 'unknown'
     }
 
-    return new Response(JSON.stringify(health), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, x-session-id'
-      }
-    })
+    return res.status(200).json(health)
   } catch (error) {
     console.error('Health check error:', error)
-    return new Response(JSON.stringify({ 
+    return res.status(500).json({ 
       status: 'error',
       error: error.message,
       timestamp: new Date().toISOString()
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
     })
   }
-}
-
-export async function OPTIONS(request) {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, x-session-id'
-    }
-  })
 } 
