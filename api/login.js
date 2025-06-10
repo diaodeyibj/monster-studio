@@ -1,22 +1,5 @@
 import bcrypt from 'bcryptjs'
-import crypto from 'crypto'
-
-// 生成随机session ID
-function generateSessionId() {
-  return crypto.randomBytes(32).toString('hex')
-}
-
-// 简单的内存session存储
-let sessions = new Map()
-
-function createSession(sessionId, userData) {
-  const session = {
-    user: userData,
-    expiresAt: Date.now() + (30 * 60 * 1000) // 30分钟
-  }
-  sessions.set(sessionId, session)
-  return session
-}
+import { generateSessionId, createSessionToken } from './_shared/sessions.js'
 
 export default function handler(req, res) {
   try {
@@ -33,38 +16,57 @@ export default function handler(req, res) {
       return
     }
 
-    if (req.method === 'POST') {
-      const { password } = req.body
+    if (req.method !== 'POST') {
+      return res.status(405).json({ 
+        success: false, 
+        error: 'Method not allowed' 
+      })
+    }
+
+    // 确保请求体存在
+    if (!req.body) {
+      return res.status(400).json({ 
+        success: false, 
+        error: '请求体为空' 
+      })
+    }
+
+    const { password } = req.body
+    
+    if (!password) {
+      return res.status(400).json({ 
+        success: false, 
+        error: '请输入密码' 
+      })
+    }
+    
+    console.log('Login attempt with password provided')
+    
+    // 简单的密码验证
+    const adminPassword = 'monster2024'
+    
+    if (password === adminPassword) {
+      // 创建session token
+      const sessionToken = createSessionToken({ username: 'admin' })
       
-      console.log('Login attempt:', { password: password ? '***' : 'empty' })
-      
-      // 简单的密码验证
-      const adminPassword = 'monster2024'
-      
-      if (password && password === adminPassword) {
-        const sessionId = generateSessionId()
-        createSession(sessionId, { username: 'admin' })
-        
-        res.setHeader('x-session-id', sessionId)
-        res.status(200).json({ 
-          success: true, 
-          message: '登录成功',
-          sessionId 
-        })
-      } else {
-        res.status(401).json({ 
-          success: false, 
-          error: '密码错误' 
-        })
-      }
+      res.setHeader('x-session-id', sessionToken)
+      return res.status(200).json({ 
+        success: true, 
+        message: '登录成功',
+        sessionId: sessionToken,
+        needsPasswordSetup: false
+      })
     } else {
-      res.status(405).json({ error: 'Method not allowed' })
+      return res.status(401).json({ 
+        success: false, 
+        error: '密码错误' 
+      })
     }
   } catch (error) {
     console.error('Login API Error:', error)
-    res.status(500).json({ 
+    return res.status(500).json({ 
       success: false, 
-      error: 'Internal server error: ' + error.message 
+      error: '服务器内部错误: ' + error.message 
     })
   }
 } 

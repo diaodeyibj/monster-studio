@@ -3,12 +3,23 @@ class ConfigService {
   constructor() {
     this.config = null
     this.listeners = []
-    // 在生产环境中使用相对路径，开发环境使用localhost
-    this.apiBaseUrl = process.env.NODE_ENV === 'production' 
-      ? '/api' 
-      : 'http://localhost:3001/api'
+    // 修复API基础URL检测逻辑
+    this.apiBaseUrl = this.getApiBaseUrl()
     this.sessionId = localStorage.getItem('monster-studio-session')
     this.init()
+  }
+
+  // 智能检测API基础URL
+  getApiBaseUrl() {
+    // 如果在本地开发环境 (localhost/127.0.0.1)
+    if (window.location.hostname === 'localhost' || 
+        window.location.hostname === '127.0.0.1' || 
+        window.location.hostname === '0.0.0.0') {
+      return 'http://localhost:3001/api'
+    }
+    
+    // 生产环境或其他环境使用相对路径
+    return '/api'
   }
 
   // 获取请求头（包含session）
@@ -26,8 +37,13 @@ class ConfigService {
 
   // 登录
   async login(password) {
+    console.log('开始登录, API URL:', this.apiBaseUrl)
+    
     try {
-      const response = await fetch(`${this.apiBaseUrl}/login`, {
+      const loginUrl = `${this.apiBaseUrl}/login`
+      console.log('正在请求:', loginUrl)
+      
+      const response = await fetch(loginUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,11 +51,29 @@ class ConfigService {
         body: JSON.stringify({ password })
       })
 
+      console.log('登录响应状态:', response.status)
+      console.log('登录响应头:', {
+        contentType: response.headers.get('content-type'),
+        sessionId: response.headers.get('x-session-id')
+      })
+
+      // 检查响应是否为JSON
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text()
+        console.error('API返回非JSON响应:', text)
+        console.error('响应状态:', response.status)
+        console.error('响应头:', Object.fromEntries(response.headers.entries()))
+        throw new Error(`服务器响应格式错误 (${response.status}): ${text.substring(0, 200)}`)
+      }
+
       const result = await response.json()
+      console.log('登录结果:', result)
       
       if (result.success) {
         this.sessionId = result.sessionId
         localStorage.setItem('monster-studio-session', this.sessionId)
+        console.log('登录成功，session已保存')
         return {
           success: true,
           needsPasswordSetup: result.needsPasswordSetup
@@ -49,6 +83,16 @@ class ConfigService {
       }
     } catch (error) {
       console.error('登录失败:', error)
+      console.error('错误详情:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      })
+      
+      // 提供更友好的错误信息
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('无法连接到服务器，请检查网络连接')
+      }
       throw error
     }
   }
@@ -64,7 +108,23 @@ class ConfigService {
         headers: this.getHeaders()
       })
 
+      // 检查响应是否为JSON
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        console.warn('Auth check返回非JSON响应')
+        this.sessionId = null
+        localStorage.removeItem('monster-studio-session')
+        return { authenticated: false }
+      }
+
       const result = await response.json()
+      
+      // 检查是否有新的session token
+      const newSessionId = response.headers.get('x-session-id')
+      if (newSessionId && newSessionId !== this.sessionId) {
+        this.sessionId = newSessionId
+        localStorage.setItem('monster-studio-session', this.sessionId)
+      }
       
       if (!result.authenticated) {
         this.sessionId = null
