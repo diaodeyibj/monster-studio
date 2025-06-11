@@ -1,25 +1,5 @@
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// 配置文件路径
-const CONFIG_FILE = path.join(process.cwd(), 'config.json')
-
-// 读取配置文件
-function readConfig() {
-  try {
-    if (fs.existsSync(CONFIG_FILE)) {
-      const data = fs.readFileSync(CONFIG_FILE, 'utf8')
-      return JSON.parse(data)
-    }
-  } catch (error) {
-    console.error('读取配置文件失败:', error)
-  }
-  
-  // 返回默认配置
+// Vercel serverless 环境中的默认配置
+function getDefaultConfig() {
   return {
     company: {
       name: '怪兽工场',
@@ -35,9 +15,42 @@ function readConfig() {
       { id: 2, name: '关于我们', path: '/about', title: '关于我们' },
       { id: 3, name: '力量来源', path: '/team', title: '力量来源' }
     ],
-    services: [],
-    projects: [],
-    team: []
+    services: [
+      {
+        id: 1,
+        name: '视觉特效',
+        description: '电影级视觉特效制作'
+      },
+      {
+        id: 2,
+        name: '动画制作',
+        description: '高质量动画内容创作'
+      },
+      {
+        id: 3,
+        name: '后期制作',
+        description: '专业影视后期处理'
+      }
+    ],
+    projects: [
+      {
+        id: 1,
+        title: '示例项目',
+        description: '这是一个示例项目',
+        category: 'VFX'
+      }
+    ],
+    team: [
+      {
+        id: 1,
+        name: '团队成员',
+        role: '视觉特效总监',
+        description: '拥有丰富的视觉特效制作经验'
+      }
+    ],
+    status: 'success',
+    timestamp: new Date().toISOString(),
+    environment: 'vercel-serverless'
   }
 }
 
@@ -56,35 +69,22 @@ export default function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-      const config = readConfig()
+      const config = getDefaultConfig()
       res.status(200).json(config)
     } else if (req.method === 'POST') {
-      // 简单的认证检查
-      const sessionId = req.headers['x-session-id']
-      if (!sessionId) {
-        return res.status(401).json({ 
-          success: false, 
-          error: '未授权访问，请先登录' 
-        })
-      }
-
-      // 保存配置
-      try {
-        const newConfig = req.body
-        fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2), 'utf8')
-        res.status(200).json({ 
-          success: true, 
-          message: '配置保存成功' 
-        })
-      } catch (error) {
-        console.error('保存配置失败:', error)
-        res.status(500).json({ 
-          success: false, 
-          error: '配置保存失败' 
-        })
-      }
+      // Vercel serverless 环境说明
+      res.status(200).json({ 
+        success: false, 
+        message: 'Vercel serverless 环境不支持配置写入',
+        note: '配置数据存储在代码中，如需修改请更新代码',
+        currentConfig: getDefaultConfig()
+      })
     } else {
-      res.status(405).json({ error: 'Method not allowed' })
+      res.status(405).json({ 
+        success: false,
+        error: 'Method not allowed',
+        allowedMethods: ['GET', 'POST']
+      })
     }
   } catch (error) {
     console.error('Config API Error:', error)
