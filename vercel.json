@@ -23,6 +23,10 @@
     {
       "src": "api/health.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/config.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -43,8 +47,16 @@
       "dest": "/api/health.js"
     },
     {
+      "src": "/api/config",
+      "dest": "/api/config.js"
+    },
+    {
       "src": "/test-api.html",
       "dest": "/test-api.html"
+    },
+    {
+      "src": "/(.*\\.(js|mjs|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+      "dest": "/$1"
     },
     {
       "src": "/(.*)",
