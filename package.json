@@ -12,7 +12,7 @@
     "server": "node server.cjs",
     "start": "concurrently \"npm run server\" \"npm run dev\"",
     "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
-    "vercel-build": "vite build",
+    "vercel-build": "vite build && node copy-test-api.js",
     "check-deploy": "node deployment-check.mjs"
   },
   "dependencies": {
