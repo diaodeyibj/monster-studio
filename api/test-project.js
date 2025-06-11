@@ -1,16 +1,10 @@
 // Monster Studio - 项目功能测试API（保护原功能）
-import path from 'path'
-import fs from 'fs'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
 export default function handler(req, res) {
-  // 设置CORS头
+  // 设置CORS头和Content-Type
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Content-Type', 'application/json')
   
   // 处理OPTIONS预检请求
   if (req.method === 'OPTIONS') {
@@ -66,10 +60,11 @@ export default function handler(req, res) {
     res.status(200).json(response)
     
   } catch (error) {
+    res.setHeader('Content-Type', 'application/json')
     res.status(500).json({
       success: false,
       message: '❌ 项目测试失败',
-      error: error.message,
+      error: error.message || 'Unknown error',
       timestamp: new Date().toISOString()
     })
   }
