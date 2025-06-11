@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 
 // 内联session管理
