@@ -64,6 +64,7 @@
         <div class="test-section">
             <h2>基础连接测试</h2>
             <button onclick="testBasicConnection()">测试基础 API</button>
+            <button onclick="testHelloAPI()">测试 Hello API</button>
             <div id="basic-result" class="result"></div>
         </div>
 
@@ -106,6 +107,24 @@
                 }
             } catch (error) {
                 resultDiv.innerHTML = `<span class="error">❌ 网络错误</span>\n${error.message}`;
+            }
+        }
+
+        async function testHelloAPI() {
+            const resultDiv = document.getElementById('basic-result');
+            resultDiv.innerHTML = '<span class="loading">🔄 测试 Hello API...</span>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/hello`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<span class="success">✅ Hello API 成功！</span>\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Hello API 失败</span>\n状态码: ${response.status}\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Hello API 网络错误</span>\n${error.message}`;
             }
         }
 

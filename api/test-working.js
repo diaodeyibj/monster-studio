@@ -1,5 +1,5 @@
-// 使用CommonJS格式的Vercel API测试
-module.exports = function handler(req, res) {
+// Vercel API测试端点
+export default function handler(req, res) {
   // 设置CORS头
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
