@@ -367,40 +367,60 @@ class ConfigService {
         body: JSON.stringify(config)
       })
 
-      if (response.ok) {
-        const result = await response.json()
-        console.log('配置保存成功:', result)
-        
-        // 更新本地配置
-        this.config = { ...config }
-        
-        // 同时保存到本地存储作为备份
-        try {
-          localStorage.setItem('monster-studio-config', JSON.stringify(config))
-        } catch (localError) {
-          console.warn('本地存储备份失败:', localError)
+      const result = await response.json()
+      console.log('配置保存响应:', result)
+      
+      // 无论后端是否支持保存，都更新本地配置
+      this.config = { ...config }
+      
+      // 始终保存到本地存储
+      try {
+        localStorage.setItem('monster-studio-config', JSON.stringify(config))
+        console.log('配置已保存到本地存储')
+      } catch (localError) {
+        console.warn('本地存储失败:', localError)
+      }
+      
+      // 通知所有监听器
+      this.notifyListeners()
+      
+      if (response.ok && result.success) {
+        console.log('配置保存成功（服务器+本地）')
+        return {
+          success: true,
+          message: result.message || '配置保存成功',
+          storage: '服务器+本地存储'
         }
-        
-        // 通知所有监听器
-        this.notifyListeners()
-        return true
       } else {
-        const errorData = await response.json().catch(() => ({ message: '未知错误' }))
-        throw new Error(errorData.message || '后端保存失败')
+        // 后端不支持或保存失败，但本地保存成功
+        console.log('后端保存失败，使用本地存储:', result.message)
+        return {
+          success: true,
+          message: result.message || '配置已保存到本地存储',
+          storage: '仅本地存储',
+          note: result.note || '建议配置持久化存储服务',
+          fallback: true
+        }
       }
     } catch (error) {
-      console.error('保存到后端失败:', error)
+      console.error('网络或解析错误:', error)
       
-      // 后备方案：保存到本地存储
+      // 网络错误，仍然保存到本地存储
       try {
         localStorage.setItem('monster-studio-config', JSON.stringify(config))
         this.config = { ...config }
         this.notifyListeners()
-        console.warn('已保存到本地存储，建议检查后端服务')
-        return true
+        console.log('网络错误，配置已保存到本地存储')
+        return {
+          success: true,
+          message: '网络连接失败，配置已保存到本地存储',
+          storage: '仅本地存储',
+          fallback: true,
+          error: error.message
+        }
       } catch (localError) {
         console.error('本地保存也失败:', localError)
-        throw new Error('配置保存失败：' + error.message)
+        throw new Error('配置保存完全失败: ' + localError.message)
       }
     }
   }
@@ -417,21 +437,39 @@ class ConfigService {
         headers['x-session-id'] = this.sessionId
       }
 
+      console.log('上传文件:', file.name, '类型:', type)
+
       const response = await fetch(`${this.apiBaseUrl}/upload`, {
         method: 'POST',
         headers: headers,
         body: formData
       })
 
-      if (response.ok) {
-        const result = await response.json()
-        return result.url
+      console.log('上传响应状态:', response.status)
+
+      // 检查响应是否为JSON
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text()
+        console.error('上传API返回非JSON响应:', text)
+        throw new Error(`服务器响应格式错误: ${text.substring(0, 100)}`)
+      }
+
+      const result = await response.json()
+      console.log('上传结果:', result)
+
+      if (result.success) {
+        // 返回文件URL，在Vercel环境中可能需要特殊处理
+        return result.file.url || result.file.tempPath
       } else {
-        const error = await response.json()
-        throw new Error(error.error || '上传失败')
+        throw new Error(result.error || result.message || '上传失败')
       }
     } catch (error) {
       console.error('文件上传失败:', error)
+      // 提供更友好的错误信息
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('无法连接到上传服务器，请检查网络连接')
+      }
       throw error
     }
   }

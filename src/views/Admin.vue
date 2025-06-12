@@ -52,47 +52,34 @@
         </div>
       </div>
 
-      <!-- 导航 -->
-      <Navigation />
-      
-      <!-- 头部 -->
-      <header class="admin-header">
-        <div class="max-w-7xl mx-auto px-6 py-8">
-          <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-3xl font-light text-white mb-2">内容管理</h1>
-              <p class="text-gray-400">实时编辑网站内容，修改后立即生效</p>
-            </div>
-            <div class="flex items-center space-x-4">
-              <button 
-                @click="resetToDefaults"
-                class="px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:border-gray-500 transition-colors"
-              >
-                重置默认
-              </button>
-              <button 
-                @click="exportConfig"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                导出配置
-              </button>
-              <input
-                ref="fileInput"
-                type="file"
-                accept=".json"
-                @change="handleFileImport"
-                class="hidden"
-              />
-              <button 
-                @click="$refs.fileInput.click()"
-                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                导入配置
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <!-- 操作按钮区 -->
+      <div class="flex items-center justify-end space-x-4 mb-8">
+        <button 
+          @click="resetToDefaults"
+          class="px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:border-gray-500 transition-colors"
+        >
+          重置默认
+        </button>
+        <button 
+          @click="exportConfig"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          导出配置
+        </button>
+        <input
+          ref="fileInput"
+          type="file"
+          accept=".json"
+          @change="handleFileImport"
+          class="hidden"
+        />
+        <button 
+          @click="$refs.fileInput.click()"
+          class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+        >
+          导入配置
+        </button>
+      </div>
 
       <div class="flex">
         <!-- 侧边栏 -->
@@ -1295,9 +1282,26 @@ export default {
     async saveConfig() {
       this.saving = true
       try {
-        await configService.saveConfig(this.config)
+        const result = await configService.saveConfig(this.config)
         this.hasChanges = false
-        this.showMessage('配置保存成功！', 'success')
+        
+        // 根据保存结果显示不同的消息
+        if (result.success) {
+          let message = result.message
+          if (result.fallback) {
+            message += ' (使用本地存储)'
+          }
+          this.showMessage(message, 'success')
+          
+          // 如果是fallback模式，显示额外提示
+          if (result.fallback && result.note) {
+            setTimeout(() => {
+              this.showMessage(result.note, 'info')
+            }, 3500)
+          }
+        } else {
+          this.showMessage(result.message || '保存失败', 'error')
+        }
       } catch (error) {
         console.error('保存失败:', error)
         this.showMessage(error.message || '保存失败，请重试', 'error')
